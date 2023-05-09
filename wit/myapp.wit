@@ -1,0 +1,11 @@
+default world myapp {
+  record foo {
+    bar: u64,
+    baz: u64,
+  }
+
+  import some-host-func: func(s: string)
+
+  export do-the-thing: func(data: foo)
+}
+

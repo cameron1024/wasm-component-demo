@@ -1,0 +1,9 @@
+[package]
+name = "wasm-component-demo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+wasmtime = { version = "8", features = ["component-model"] }
+wasmtime-wasi = "8"  # WASI extension
+wit-bindgen = "0.6"  
