@@ -11,8 +11,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut config = Config::new();
     config.wasm_component_model(true);
     let engine = Engine::new(&config)?;
-    let linker = Linker::new(&engine);
-    let mut store = Store::new(&engine, ());
+    let mut linker = Linker::new(&engine);
+    let mut store = Store::new(&engine, Foo {});
+
+    wasm::Myapp::add_to_linker(&mut linker, |i| i)?;
 
     let component = Component::from_binary(&engine, bytes)?;
 
@@ -25,13 +27,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+struct Foo {}
+
+impl wasm::MyappImports for Foo {
+    fn some_host_func(&mut self, s: String) -> wasmtime::Result<()> {
+        println!("WASM called a host function: {s}");
+        Ok(())
+    }
+}
+
 mod wasm {
     wasmtime::component::bindgen!("myapp");
-
-    impl MyappImports for Myapp {
-        fn some_host_func(&mut self, s: String) -> wasmtime::Result<()> {
-            println!("WASM called a host function: {s}");
-            Ok(())
-        }
-    }
 }
